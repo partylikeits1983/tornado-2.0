@@ -49,8 +49,9 @@ bb contract
 
 
 
-Full deposit command:
+## Full Series of Commands
 
+### 1) Create Deposit proof from /deposit/Prover.toml
 ```
 cd circuits/deposit
 nargo execute
@@ -63,27 +64,21 @@ cargo run --package tornado-cli --bin deposit_proof_convert
 cd ..
 ```
 
-
-Get Nullifier Hash:
+### 2) Compute nullifier hash
 ```
 forge test --match-test test_write_nullifier
 ```
 
-
-Foundry script/test:
+### 3) Get IMT root, proof siblings, and path indicies, then format /withdraw/Prover.toml
 ```
 forge test --match-test test_deposit_proof_vault_generate_data
 
 cd tornado-cli
 cargo run --package tornado-cli --bin withdraw_prover_formatter
 cd ..
-
 ```
 
-
-
-
-Full Withdraw command:
+### 4) Create withdraw proof, convert to hex, run test
 ```
 cd circuits/withdraw
 nargo execute
