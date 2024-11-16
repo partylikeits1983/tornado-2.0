@@ -81,7 +81,13 @@ fn get_current_timestamp() -> io::Result<String> {
     let start = SystemTime::now();
     let since_the_epoch = start.duration_since(UNIX_EPOCH)
         .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
-    Ok(since_the_epoch.as_secs().to_string())
+    let timestamp = since_the_epoch.as_secs();
+
+    // Convert timestamp to a 256-bit (64 hex characters) hexadecimal string
+    // Pad with leading zeros and prefix with "0x"
+    let hex_timestamp = format!("0x{:064x}", timestamp);
+    
+    Ok(hex_timestamp)
 }
 
 // Function to read secret and nullifier from Prover.toml

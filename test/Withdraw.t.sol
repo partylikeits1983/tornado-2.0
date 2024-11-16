@@ -11,8 +11,6 @@ import {PoseidonT3} from "../src/libraries/PoseidonT3.sol";
 import {UltraVerifier as DepositVerifier} from "../../circuits/deposit/target/contract.sol";
 import {UltraVerifier as WithdrawVerifier} from "../../circuits/withdraw/target/contract.sol";
 
-
-
 import {ConvertBytes32ToString} from "../src/libraries/Bytes32ToString.sol";
 
 import {Vault} from "../src/Vault.sol";
@@ -132,26 +130,27 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
     }
 
 
-    /*     function test_IMT_proof() public {
+    function test_withdraw_proof() public {
         // private inputs
         uint256 nullifier = 0;
         uint256 secret = 0;
 
-        uint256 commitmentHash = PoseidonT3.hash([nullifier, secret]);
-        uint256 nulifierHash = PoseidonT2.hash([nullifier]);
-
         string memory proof = vm.readLine("./data/proof.txt");
         bytes memory proofBytes = vm.parseBytes(proof);
 
-        string memory input_0 = vm.readLine("./data/input_0.txt");
-        string memory input_1 = vm.readLine("./data/input_1.txt");
-
+        string memory current_timestamp = vm.readLine("./data/withdraw_current_timestamp.txt");
+        string memory input_1 = vm.readLine("./data/d.txt");
+        string memory input_2 = vm.readLine("./data/input_1.txt");
+        string memory input_3 = vm.readLine("./data/input_1.txt");
+        string memory input_4 = vm.readLine("./data/input_1.txt");
+        
+        
         bytes32[] memory publicInputs = new bytes32[](2);
         publicInputs[0] = stringToBytes32(input_0);
         publicInputs[1] = stringToBytes32(input_1);
 
         console.log("checking zk proof");
-        verifier.verify(proofBytes, publicInputs);
+        withdrawVerifier.verify(proofBytes, publicInputs);
         console.log("verified");
-    } */
+    }
 }
