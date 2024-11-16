@@ -51,6 +51,12 @@ contract Vault is CryptoTools {
         roots[nextRootIndex] = newRoot;
         nextRootIndex = (nextRootIndex + 1) % 32;
 
+        // Placeholder for Aave deposit logic
+        // TODO: Implement Aave deposit here
+        // Example:
+        // aavePool.deposit(asset, liquidity, address(this), 0);
+        // The deposited liquidity will earn interest over time in Aave
+
         // Return the new leaf index
         return CryptoTools.leafCount - 1;
     }
@@ -86,8 +92,23 @@ contract Vault is CryptoTools {
         // Mark the nullifier as used
         nullifier_hashes[nullifier_hash] = true;
 
-        // Send ETH to the recipient with the liquidity amount in the withdraw function
-        (bool success,) = recipient.call{value: liquidity}("");
-        require(success, "Transfer failed");
+        // Placeholder for Aave withdraw logic to recipient
+        // TODO: Implement Aave withdraw here
+        // Example:
+        // aavePool.withdraw(asset, liquidity, recipient);
+        // The recipient receives the original liquidity amount, while the interest remains in the contract
+
+        // @dev The 0.01 ETH reward is funded from the interest earned on the liquidity provided to Aave
+        // this is merely a placeholder right now
+        uint256 reward = 0.01 ether;
+
+        (bool tx_0,) = recipient.call{value: liquidity - reward}("");
+        require(tx_0, "Transfer of liquidity failed");
+
+        (bool tx_1,) = msg.sender.call{value: reward}("");
+        require(tx_1, "Transfer of reward failed");
     }
+
+    // Fallback function to accept ETH (if needed for future implementations)
+    receive() external payable {}
 }

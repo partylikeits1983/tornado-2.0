@@ -63,14 +63,13 @@ forge test --match-test test_withdraw_proof
 
 
 
-### FRONTEND:
-
-deploy contracts & run anvil
+### RUNNING THE FRONTEND:
+1) deploy contracts & run anvil
 ```
 anvil --accounts 10 --timestamp $(date +%s) --block-time 5
 
 ```
-in new terminal:
+2) in new terminal deploy the vault & verifier contracts:
 ```
 forge script script/Deploy.s.sol --fork-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
 ```

@@ -45,28 +45,6 @@ export const authenticateUser = async (username: string) => {
     }
 };
 
-/* export const generateWallet = async (
-    signature: string,
-): Promise<ethers.HDNodeWallet> => {
-    const signatureBuffer = Buffer.from(signature, 'base64');
-    const signatureHex = '0x' + signatureBuffer.toString('hex');
-    const hashedSignature = ethers.keccak256(signatureHex);
-
-    const mnemonic = ethers.Mnemonic.entropyToPhrase(hashedSignature);
-
-    const wallet = ethers.Wallet.fromPhrase(mnemonic);
-
-    if (!wallet.mnemonic) {
-        throw new Error('Failed to generate a mnemonic.');
-    }
-
-    const mnemonicPhrase = wallet.mnemonic.phrase;
-    const deterministicWallet = ethers.Wallet.fromPhrase(mnemonicPhrase);
-
-    return deterministicWallet;
-};
- */
-
 function dedent(strings: TemplateStringsArray, ...values: any[]) {
     // Combine the strings and values into a single string
     let fullString = strings.reduce(
