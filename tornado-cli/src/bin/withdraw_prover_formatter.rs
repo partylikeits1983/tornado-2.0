@@ -2,8 +2,16 @@ use std::fs::File;
 use std::io::{self, BufRead, Write};
 use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
+use dotenv::dotenv; // Import the dotenv crate
+use std::env; // Import the env module to access environment variables
 
 fn main() -> io::Result<()> {
+    // Initialize dotenv to load variables from .env
+    dotenv().ok();
+
+    // Retrieve the RECIPIENT value from the environment
+    let recipient = env::var("RECIPIENT").expect("RECIPIENT not set in .env");
+
     // Paths for input data
     let root_path = Path::new("../data/root.txt");
     let siblings_path = Path::new("../data/proof_siblings.txt");
@@ -45,6 +53,7 @@ fn main() -> io::Result<()> {
         writeln!(file, "secret = \"{}\"", secret_value)?;
         writeln!(file, "nullifier = \"{}\"", nullifier_value)?;
         writeln!(file, "nullifier_hash = \"{}\"", nullifier_hash)?;
+        writeln!(file, "recipient = \"{}\"", recipient)?;
         writeln!(file, "proof_path_indices = [")?;
         for line in io::BufReader::new(File::open(&indices_path)?).lines() {
             let line = line?;

@@ -81,6 +81,11 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         console.log("Leaf %d verified successfully.", leafValue);
     }
 
+    function test_write_recipient() public {
+        // string memory 
+    }
+
+
     function test_write_nullifier() public {
         // generate nullifier_hash from nullifier
 

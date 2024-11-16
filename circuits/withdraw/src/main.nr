@@ -1,6 +1,7 @@
 use dep::std::hash::poseidon;
 
 fn main(
+    recipient_address: pub Field, // unused in the circuit, only used in withdraw func
     current_timestamp: pub Field,
     deposit_timestamp: Field,
     asset: pub Field,
@@ -42,6 +43,7 @@ fn main(
 #[test]
 fn test_main() {
     // Step 1: Set up inputs
+    let recipient_address = 123;
     let current_timestamp = 1731728931; // Sat Nov 16 2024 03:48:51 GMT+0000
     let deposit_timestamp = 1731613683; // Thu Nov 14 2024 19:48:03 GMT+0000
     let asset = 0;
@@ -56,7 +58,7 @@ fn test_main() {
     let leaf = poseidon::bn254::hash_2([hash_2, deposit_timestamp]);
 
     // Step 3: Compute the nullifier hash
-    let nullifier_hash = poseidon::bn254::hash_1([nullifier]);
+    let nullifier_hash: Field = poseidon::bn254::hash_1([nullifier]);
 
     // Step 4: Generate Merkle proof (all siblings are zeros)
     let proof_siblings: [Field; 32] = [
@@ -89,14 +91,15 @@ fn test_main() {
 
     // Step 6: Invoke the main function
     main(
+        recipient_address,
         current_timestamp,
         deposit_timestamp,
         asset,
         liquidity,
         root,
-        nullifier_hash,
-        nullifier,
         secret,
+        nullifier,
+        nullifier_hash,
         proof_siblings,
         proof_path_indices,
     );

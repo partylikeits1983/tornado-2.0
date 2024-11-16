@@ -35,11 +35,12 @@ fn main() -> io::Result<()> {
     // Save each input to its respective file
     for (idx, input_hex) in public_inputs.iter().enumerate() {
         let filename = match idx {
-            0 => "withdraw_current_timestamp.txt",
-            1 => "withdraw_asset.txt",
-            2 => "withdraw_liquidity.txt",
-            3 => "withdraw_root.txt",
-            4 => "withdraw_nullifier_hash.txt",
+            0 => "withdraw_recipient.txt",
+            1 => "withdraw_current_timestamp.txt",
+            2 => "withdraw_asset.txt",
+            3 => "withdraw_liquidity.txt",
+            4 => "withdraw_root.txt",
+            5 => "withdraw_nullifier_hash.txt",
             _ => {
                 eprintln!("Unexpected index {} for public inputs.", idx);
                 std::process::exit(1);
