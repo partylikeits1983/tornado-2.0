@@ -109,8 +109,8 @@ export const generateLeaf = async (
         console.log('HERE');
 
         // Generate random secret and nullifier
-        const secretBytes = randomBytes(32);
-        const nullifierBytes = randomBytes(32);
+        const secretBytes = randomBytes(8);
+        const nullifierBytes = randomBytes(8);
 
         // Convert bytes to BigInt
         const secret = ethers.toBigInt(secretBytes);
@@ -161,3 +161,48 @@ export const generateLeaf = async (
         return 'Error generating Prover.toml content.';
     }
 };
+
+
+// webAuthn.ts
+export const submitProof = async (
+    walletProvider: any,
+    proofBytes: string,
+    publicInputs: string[],
+    ethAmount: string
+  ) => {
+    if (!walletProvider) {
+        throw new Error('Wallet provider not available.');
+      }
+
+    console.log("submit proof")
+    const { ethers } = require('ethers');
+  
+    const ethersProvider = new BrowserProvider(walletProvider);
+    const signer = await ethersProvider.getSigner();
+
+    console.log("HERE");
+  
+    // Replace with your contract's ABI and address
+    const contract = new ethers.Contract(vaultAddress, VAULT_ABI, signer);
+  
+    // Convert proofBytes and publicInputs to the required format
+    const proofBytesArray = proofBytes;
+    const publicInputsBytes32 = publicInputs.map((input) =>
+      ethers.zeroPadValue(input, 32)
+    );
+    
+    console.log("HERE submit proof");
+    console.log(proofBytesArray, publicInputsBytes32);
+
+    try {
+        const tx = await contract.deposit(proofBytesArray, publicInputsBytes32, {
+            value: parseEther(ethAmount), // Include the ETH amount here
+          });      await tx.wait();
+      alert('Proof submitted successfully.');
+    } catch (error: any) {
+      console.error(error);
+      alert('Error submitting proof: ' + error.message);
+    }
+  };
+  
+
