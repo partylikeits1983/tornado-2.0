@@ -116,7 +116,9 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         (uint256[] memory proofSiblings, uint8[] memory proofPathIndices) = vault.createProof(leafIndex);
 
         vm.writeFile("data/root.txt", bytes32ToString(bytes32(root)));
-        // vm.writeFile("data/leaf.txt", bytes32ToString(stringToBytes32(leaf)));
+
+        vm.writeFile("data/proof_siblings.txt", "");
+        vm.writeFile("data/proof_path_indices.txt", "");
 
         for (uint256 i = 0; i < proofSiblings.length; i++) {
             string memory path = "data/proof_siblings.txt";

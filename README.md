@@ -63,11 +63,16 @@ cargo run --package tornado-cli --bin deposit_proof_convert
 cd ..
 ```
 
-
 Full Withdraw command:
 
 ```
-bb write_vk -b ./target/withdraw.json -o ./target/vk
-
-
+cd circuits/withdraw
+nargo execute
+bb prove -b ./target/deposit.json -w ./target/deposit.gz -o ./target/proof
+bb write_vk -b ./target/deposit.json -o ./target/vk
+cd ..
+cd ..
+cd tornado-cli 
+cargo run --package tornado-cli --bin deposit_proof_convert 
+cd ..
 ```

@@ -61,6 +61,8 @@ fn main() -> io::Result<()> {
 
     // Write to withdraw Prover.toml
     common_fields(&mut withdraw_file)?;
+
+    println!("Withdraw Prover.toml formatted successfully");
     
     Ok(())
 }
