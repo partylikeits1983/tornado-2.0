@@ -81,10 +81,6 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         console.log("Leaf %d verified successfully.", leafValue);
     }
 
-    function test_write_recipient() public {
-        // string memory
-    }
-
     function test_write_nullifier() public {
         // generate nullifier_hash from nullifier
 
@@ -283,6 +279,9 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         vm.stopPrank();
 
         // assert recipient balance is equal to withdraw liquidity amount
-        assert(address(uint160(uint256(stringToBytes32(withdraw_recipient)))).balance == uint(stringToBytes32(withdraw_liquidity)));
+        assert(
+            address(uint160(uint256(stringToBytes32(withdraw_recipient)))).balance
+                == uint256(stringToBytes32(withdraw_liquidity))
+        );
     }
 }
