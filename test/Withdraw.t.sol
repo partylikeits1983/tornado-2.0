@@ -30,7 +30,7 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
     }
 
     function test_hash() public view {
-        uint256 result = hasher.hash(1, 2);
+        uint256 result = hasher.hash2(1, 2);
         console.log("result: %d", result);
 
         bytes32 value = bytes32(result);

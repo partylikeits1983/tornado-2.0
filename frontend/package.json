@@ -1,0 +1,64 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@noir-lang/backend_barretenberg": "^0.25.0",
+    "@noir-lang/noir_js": "^0.25.0",
+    "@noir-lang/noir_wasm": "^0.25.0",
+    "@noir-lang/types": "^0.25.0",
+    "@passwordless-id/webauthn": "^1.5.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.95",
+    "@types/react": "^18.2.74",
+    "@types/react-dom": "^18.2.24",
+    "@web3modal/ethers": "^4.1.5",
+    "assert": "^2.1.0",
+    "ethers": "^6.11.1",
+    "framer-motion": "^11.0.25",
+    "https-browserify": "^1.0.0",
+    "poseidon-lite": "^0.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^10.0.5",
+    "stream-http": "^3.2.0",
+    "typescript": "^4.9.5",
+    "util": "^0.12.5",
+    "viem": "^2.9.15",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "GENERATE_SOURCEMAP=false react-scripts start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
+  }
+}

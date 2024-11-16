@@ -13,7 +13,7 @@ contract Vault is CryptoTools {
 
     mapping(uint256 => bool) public nullifier_hashes;
 
-    // 1) Have an array of the last 32 IMT roots
+    // @dev storing last 32 IMT roots
     uint256[32] public roots;
     uint8 public nextRootIndex;
 
@@ -46,7 +46,7 @@ contract Vault is CryptoTools {
         // Insert the leaf into the cryptographic tree
         CryptoTools.insert(leaf);
 
-        // 2) Append the new IMT root during the deposit
+        // @dev Append the new IMT root during the deposit
         uint256 newRoot = binaryIMTData.root;
         roots[nextRootIndex] = newRoot;
         nextRootIndex = (nextRootIndex + 1) % 32;
@@ -70,7 +70,7 @@ contract Vault is CryptoTools {
 
         require(nullifier_hashes[nullifier_hash] == false, "hash already used");
 
-        // 3) Check if the root in the withdraw function is in 1 of the last 32 IMT roots
+        // @dev Check if the root in the withdraw function is in 1 of the last 32 IMT roots
         bool rootIsValid = false;
         for (uint8 i = 0; i < 32; i++) {
             if (roots[i] == root) {
@@ -86,7 +86,7 @@ contract Vault is CryptoTools {
         // Mark the nullifier as used
         nullifier_hashes[nullifier_hash] = true;
 
-        // 4) Send ETH to the recipient with the liquidity amount in the withdraw function
+        // Send ETH to the recipient with the liquidity amount in the withdraw function
         (bool success,) = recipient.call{value: liquidity}("");
         require(success, "Transfer failed");
     }

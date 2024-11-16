@@ -12,11 +12,11 @@ fn main(secret: Field, nullifier: Field, asset: pub Field, liquidity: pub Field,
 
 #[test]
 fn test_main() {
-    let secret = 22;
-    let nullifier = 55;
+    let secret = 0;
+    let nullifier = 0;
     let asset = 0;
-    let liquidity = 10000000000000000;
-    let timestamp = 1731732846; // Sat Nov 16 2024 04:54:06 GMT+0000
+    let liquidity = 50000000000000000;
+    let timestamp = 1731753946; // Sat Nov 16 2024 04:54:06 GMT+0000
 
     let hash_0 = poseidon::bn254::hash_2([secret, nullifier]);
     let hash_1 = poseidon::bn254::hash_2([asset, liquidity]);
