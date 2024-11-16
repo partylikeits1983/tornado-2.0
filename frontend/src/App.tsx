@@ -42,8 +42,6 @@ const App: React.FC = () => {
             w={{ base: '90%', sm: '80%', md: 'lg' }}
           >
             <MainForm
-              setIsAuthenticated={setIsAuthenticated}
-              isAuthenticated={isAuthenticated}
               walletProvider={walletProvider}
             />
           </Box>

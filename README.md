@@ -67,7 +67,7 @@ forge test --match-test test_withdraw_proof
 
 deploy contracts & run anvil
 ```
-anvil --accounts 10 --timestamp 1731760900
+anvil --accounts 10 --timestamp 1731762113
 ```
 in new terminal:
 ```
