@@ -41,9 +41,7 @@ const App: React.FC = () => {
             bg="gray.700"
             w={{ base: '90%', sm: '80%', md: 'lg' }}
           >
-            <MainForm
-              walletProvider={walletProvider}
-            />
+            <MainForm walletProvider={walletProvider} />
           </Box>
         </Flex>
       </Flex>

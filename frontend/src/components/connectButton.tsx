@@ -53,6 +53,13 @@ const chains: ChainConfig[] = [
     rpcUrl: 'http://127.0.0.1:8545',
   },
   {
+    chainId: 534351,
+    name: 'Scroll Sepolia',
+    currency: 'ETH',
+    explorerUrl: 'https://sepolia.scrollscan.com/',
+    rpcUrl: 'https://sepolia-rpc.scroll.io',
+  },
+  {
     chainId: 1,
     name: 'Ethereum',
     currency: 'ETH',

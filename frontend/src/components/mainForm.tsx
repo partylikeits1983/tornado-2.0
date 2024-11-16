@@ -19,7 +19,6 @@ import {
   parseDepositProof,
   parseWithdrawProof,
   submitWithdrawProof,
-  // You might need to implement submitWithdrawProof
 } from '../utils/webAuthn';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -29,7 +28,7 @@ interface MainFormProps {
 }
 
 // Represent deposit values as strings
-const depositValues = ['0.05', '0.1', '1', '10', '100'];
+const depositValues = ['0.005', '0.01', '1', '10', '100'];
 
 const MainForm: React.FC<MainFormProps> = ({ walletProvider }) => {
   const [actionType, setActionType] = useState<'deposit' | 'withdraw'>('deposit');
@@ -49,6 +48,9 @@ const MainForm: React.FC<MainFormProps> = ({ walletProvider }) => {
 
   const [contractBalance, setContractBalance] = useState<string>('0');
 
+  // Countdown timer state
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+
   useEffect(() => {
     if (walletProvider) {
       fetchContractBalance();
@@ -63,9 +65,33 @@ const MainForm: React.FC<MainFormProps> = ({ walletProvider }) => {
   const handleGenerateLeaf = async () => {
     const tomlContent = await generateLeaf(walletProvider, selectedValue);
     setProverTomlContent(tomlContent);
+    setTimeLeft(60); // Start countdown from 60 seconds
   };
 
+  // Countdown timer logic
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (timeLeft > 0) {
+      timer = setTimeout(() => {
+        setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
+      }, 1000);
+    } else if (timeLeft === 0 && proverTomlContent) {
+      // Time is up
+      toast.error('Time is up! Please generate a new proof.');
+      // Optionally reset the state related to proof submission
+      setProverTomlContent('');
+      setDepositProofFile(null);
+      setDepositPublicInputs([]);
+      setDepositProofBytes('');
+    }
+    return () => clearTimeout(timer);
+  }, [timeLeft, proverTomlContent]);
+
   const handleSubmitDepositProof = async () => {
+    if (timeLeft <= 0) {
+      alert('Time has expired. Please generate a new proof.');
+      return;
+    }
     if (!walletProvider) {
       alert('Wallet provider not available.');
       return;
@@ -84,6 +110,12 @@ const MainForm: React.FC<MainFormProps> = ({ walletProvider }) => {
       );
       toast.success('Deposit successful');
       fetchContractBalance(); // Refresh contract balance
+      // Reset timer and state
+      setTimeLeft(0);
+      setProverTomlContent('');
+      setDepositProofFile(null);
+      setDepositPublicInputs([]);
+      setDepositProofBytes('');
     } catch (error: any) {
       console.error(error);
       alert('Error submitting proof: ' + error.message);
@@ -101,9 +133,11 @@ const MainForm: React.FC<MainFormProps> = ({ walletProvider }) => {
     }
 
     try {
-      // Implement your withdraw submission logic here
-      // For example:
-      await submitWithdrawProof(walletProvider, withdrawProofBytes, withdrawPublicInputs);
+      await submitWithdrawProof(
+        walletProvider,
+        withdrawProofBytes,
+        withdrawPublicInputs,
+      );
 
       toast.success('Withdrawal successful');
       fetchContractBalance(); // Refresh contract balance
@@ -236,6 +270,12 @@ const MainForm: React.FC<MainFormProps> = ({ walletProvider }) => {
               >
                 Copy to Clipboard
               </Button>
+              {/* Display countdown timer */}
+              {timeLeft > 0 && (
+                <Text color="red.500" fontSize="lg" mt={4}>
+                  Time left to submit proof: {timeLeft} seconds
+                </Text>
+              )}
             </>
           )}
           {/* File input for deposit proof file */}
@@ -296,7 +336,12 @@ const MainForm: React.FC<MainFormProps> = ({ walletProvider }) => {
                 fontFamily="monospace"
                 height="200px"
               />
-              <Button colorScheme="purple" onClick={handleSubmitDepositProof} mt={4}>
+              <Button
+                colorScheme="purple"
+                onClick={handleSubmitDepositProof}
+                mt={4}
+                isDisabled={timeLeft <= 0} // Disable if time is up
+              >
                 Deposit ETH
               </Button>
             </>
@@ -323,80 +368,63 @@ const MainForm: React.FC<MainFormProps> = ({ walletProvider }) => {
           {/* Display parsed public inputs and proof for withdraw */}
           {withdrawPublicInputs.length > 0 && (
             <>
-            {/* Withdraw UI */}
-            <Text color="white" fontSize="lg">
-              Withdraw ETH
-            </Text>
-            {/* File input for withdraw proof file */}
-            <Input
-              type="file"
-              accept=".proof,.txt" // Adjust as needed
-              onChange={handleWithdrawProofFileChange}
-              mt={4}
-            />
-            {withdrawProofFile && (
-              <Button colorScheme="green" onClick={handleParseWithdrawProofFile}>
-                Parse Withdraw Proof File
+              <Text color="white" fontSize="lg" mt={4}>
+                Public Inputs:
+              </Text>
+              <Textarea
+                value={withdrawPublicInputs
+                  .map((input, idx) => {
+                    let label = '';
+                    switch (idx) {
+                      case 0:
+                        label = 'Recipient';
+                        break;
+                      case 1:
+                        label = 'Current Timestamp';
+                        break;
+                      case 2:
+                        label = 'Asset';
+                        break;
+                      case 3:
+                        label = 'Liquidity';
+                        break;
+                      case 4:
+                        label = 'Root';
+                        break;
+                      case 5:
+                        label = 'Nullifier Hash';
+                        break;
+                      default:
+                        label = `Input ${idx}`;
+                    }
+                    return `${label}: ${input}`;
+                  })
+                  .join('\n')}
+                readOnly
+                color="white"
+                bg="gray.800"
+                fontFamily="monospace"
+                height="200px"
+              />
+              <Text color="white" fontSize="lg" mt={4}>
+                Proof:
+              </Text>
+              <Textarea
+                value={withdrawProofBytes}
+                readOnly
+                color="white"
+                bg="gray.800"
+                fontFamily="monospace"
+                height="200px"
+              />
+              <Button
+                colorScheme="purple"
+                onClick={handleSubmitWithdrawProof}
+                mt={4}
+              >
+                Withdraw ETH
               </Button>
-            )}
-            {/* Display parsed public inputs and proof for withdraw */}
-            {withdrawPublicInputs.length > 0 && (
-              <>
-                <Text color="white" fontSize="lg" mt={4}>
-                  Public Inputs:
-                </Text>
-                <Textarea
-                  value={withdrawPublicInputs
-                    .map((input, idx) => {
-                      let label = '';
-                      switch (idx) {
-                        case 0:
-                          label = 'Recipient';
-                          break;
-                        case 1:
-                          label = 'Current Timestamp';
-                          break;
-                        case 2:
-                          label = 'Asset';
-                          break;
-                        case 3:
-                          label = 'Liquidity';
-                          break;
-                        case 4:
-                          label = 'Root';
-                          break;
-                        case 5:
-                          label = 'Nullifier Hash';
-                          break;
-                        default:
-                          label = `Input ${idx}`;
-                      }
-                      return `${label}: ${input}`;
-                    })
-                    .join('\n')}
-                  readOnly
-                  color="white"
-                  bg="gray.800"
-                  fontFamily="monospace"
-                  height="200px"
-                />
-                <Text color="white" fontSize="lg" mt={4}>
-                  Proof:
-                </Text>
-                <Textarea
-                  value={withdrawProofBytes}
-                  readOnly
-                  color="white"
-                  bg="gray.800"
-                  fontFamily="monospace"
-                  height="200px"
-                />
-                <Button colorScheme="purple" onClick={handleSubmitWithdrawProof} mt={4}>
-                  Withdraw ETH
-                </Button>
-              </>
-            )}
-          </>
+            </>
           )}
         </>
       )}

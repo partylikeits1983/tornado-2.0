@@ -13,13 +13,20 @@ contract Vault_Deploy is Script {
     function run() public {
         vm.startBroadcast();
 
-        // deploy verifiers
+        // Deploy verifiers
         DepositVerifier depositVerifier = new DepositVerifier();
         WithdrawVerifier withdrawVerifier = new WithdrawVerifier();
 
+        // Set the maximum gas price for the next transaction (Vault deployment)
+        uint256 maxGasPrice = 1e18; // Adjust this value as needed
+        vm.txGasPrice(maxGasPrice);
+
+        // Deploy the Vault contract with the specified gas price
         Vault vault = new Vault(address(depositVerifier), address(withdrawVerifier));
 
-        console.log(address(vault));
+        console.log("Vault deployed at:", address(vault));
+        console.log("DepositVerifier deployed at:", address(depositVerifier));
+        console.log("WithdrawVerifier deployed at:", address(withdrawVerifier));
 
         vm.stopBroadcast();
     }
