@@ -12,8 +12,8 @@ fn main(secret: Field, nullifier: Field, asset: pub Field, liquidity: pub Field,
 
 #[test]
 fn test_main() {
-    let secret = 123;
-    let nullifier = 123;
+    let secret = 0;
+    let nullifier = 0;
     let asset = 0;
     let liquidity = 10000000000000000;
     let timestamp = 1731732846; // Sat Nov 16 2024 04:54:06 GMT+0000
@@ -26,4 +26,9 @@ fn test_main() {
     println(_leaf);
     
     main(secret, nullifier, asset, liquidity, timestamp, _leaf);
+
+    let nulifier_hash = poseidon::bn254::hash_1([nullifier]);
+    println(nulifier_hash);
+
 }
+

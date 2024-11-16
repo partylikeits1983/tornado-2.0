@@ -130,7 +130,6 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
     }
 
 
-
     /*     function test_IMT_proof() public {
         // private inputs
         uint256 nullifier = 0;

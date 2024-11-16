@@ -6,9 +6,9 @@ fn main(
     asset: pub Field,
     liquidity: pub Field,
     root: pub Field,
-    nullifier_hash: pub Field,
-    nullifier: Field,
     secret: Field,
+    nullifier: Field,
+    nullifier_hash: pub Field,
     proof_siblings: [Field; 32],
     proof_path_indices: [Field; 32],
 ) {
