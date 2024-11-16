@@ -63,6 +63,13 @@ cargo run --package tornado-cli --bin deposit_proof_convert
 cd ..
 ```
 
+
+Get Nullifier Hash:
+```
+forge test --match-test test_write_nullifier
+```
+
+
 Foundry script/test:
 ```
 forge test --match-test test_deposit_proof_vault_generate_data
@@ -73,6 +80,9 @@ cd ..
 
 ```
 
+
+
+
 Full Withdraw command:
 ```
 cd circuits/withdraw
@@ -81,4 +91,10 @@ bb prove -b ./target/withdraw.json -w ./target/withdraw.gz -o ./target/proof
 bb write_vk -b ./target/withdraw.json -o ./target/vk
 cd ..
 cd ..
+
+cd tornado-cli
+cargo run --package tornado-cli --bin withdraw_proof_convert
+cd ..
+
+forge test --match-test test_withdraw_proof 
 ```

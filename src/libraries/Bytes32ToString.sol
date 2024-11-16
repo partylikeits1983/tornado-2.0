@@ -66,4 +66,34 @@ contract ConvertBytes32ToString {
         }
         return result;
     }
+
+    function stringToUint(string memory _numStr) public pure returns (uint256) {
+        bytes memory b = bytes(_numStr);
+        uint256 result = 0;
+        for (uint256 i = 0; i < b.length; i++) {
+            uint8 digit = uint8(b[i]) - 48; // ASCII '0' is 48
+            require(digit >= 0 && digit <= 9, "Invalid character in string");
+            result = result * 10 + digit;
+        }
+        return result;
+    }
+
+    /**
+     * @dev Finds the index of the first occurrence of `needle` in `haystack` starting from `start`.
+     * Returns `type(uint256).max` if not found.
+     */
+    function findSubstring(bytes memory haystack, bytes memory needle, uint256 start) internal pure returns (uint256) {
+        if (needle.length == 0) return 0;
+        for (uint256 i = start; i <= haystack.length - needle.length; i++) {
+            bool found = true;
+            for (uint256 j = 0; j < needle.length; j++) {
+                if (haystack[i + j] != needle[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) return i;
+        }
+        return type(uint256).max;
+    }
 }

@@ -13,7 +13,7 @@ fn main(secret: Field, nullifier: Field, asset: pub Field, liquidity: pub Field,
 #[test]
 fn test_main() {
     let secret = 22;
-    let nullifier = 22;
+    let nullifier = 55;
     let asset = 0;
     let liquidity = 10000000000000000;
     let timestamp = 1731732846; // Sat Nov 16 2024 04:54:06 GMT+0000

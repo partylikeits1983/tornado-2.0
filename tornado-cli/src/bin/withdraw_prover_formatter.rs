@@ -13,6 +13,8 @@ fn main() -> io::Result<()> {
     let liquidity_path = Path::new("../data/deposit_liquidity.txt");
     let timestamp_path = Path::new("../data/deposit_timestamp.txt");
 
+    let nullifier_hash_path = Path::new("../data/withdraw_nullifier_hash.txt");
+
     // Paths for Prover.toml files
     let withdraw_output_path = Path::new("../circuits/withdraw/Prover.toml");
     let deposit_input_path = Path::new("../circuits/deposit/Prover.toml"); // Changed to input
@@ -26,12 +28,12 @@ fn main() -> io::Result<()> {
     let deposit_asset = read_first_line(&asset_path)?;
     let deposit_liquidity = read_first_line(&liquidity_path)?;
 
+    let nullifier_hash = read_first_line(&nullifier_hash_path)?;
+
     let root_value = read_first_line(&root_path)?;
 
     // Read secret and nullifier from deposit Prover.toml
     let (secret_value, nullifier_value) = read_prover_toml(&deposit_input_path)?;
-
-    let nullifier_hash = "0x2a09a9fd93c590c26b91effbb2499f07e8f7aa12e2b4940a3aed2411cb65e11c";
 
     // Common fields for Prover.toml files
     let common_fields = |file: &mut File| -> io::Result<()> {
@@ -63,7 +65,7 @@ fn main() -> io::Result<()> {
     common_fields(&mut withdraw_file)?;
 
     println!("Withdraw Prover.toml formatted successfully");
-    
+
     Ok(())
 }
 
@@ -79,14 +81,15 @@ fn read_first_line(path: &Path) -> io::Result<String> {
 // Helper function to get the current timestamp as a string
 fn get_current_timestamp() -> io::Result<String> {
     let start = SystemTime::now();
-    let since_the_epoch = start.duration_since(UNIX_EPOCH)
+    let since_the_epoch = start
+        .duration_since(UNIX_EPOCH)
         .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
     let timestamp = since_the_epoch.as_secs();
 
     // Convert timestamp to a 256-bit (64 hex characters) hexadecimal string
     // Pad with leading zeros and prefix with "0x"
     let hex_timestamp = format!("0x{:064x}", timestamp);
-    
+
     Ok(hex_timestamp)
 }
 

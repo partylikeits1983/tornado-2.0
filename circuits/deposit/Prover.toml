@@ -1,6 +1,6 @@
 secret = "22"
-nullifier = "22"
+nullifier = "55"
 asset = "0"
 liquidity = "10000000000000000"
 timestamp = "1731732846"
-leaf = "0x1aef493cf5be676ced5e62ef7bc177d739d397bbcce00f9a1b41f70d19a24d95"
+leaf = "0x1966afa9700affc7f11535df3c1edb648175a06178d8e618e171cdcaf8486a1d"
