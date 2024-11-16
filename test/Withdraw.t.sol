@@ -22,7 +22,6 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
     WithdrawVerifier public withdrawVerifier;
     Vault public vault;
 
-
     function setUp() public {
         hasher = new CryptoTools();
         depositVerifier = new DepositVerifier();
@@ -82,6 +81,66 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         console.log("Leaf %d verified successfully.", leafValue);
     }
 
+    function test_get_nullifier() public {
+        // generate nullifier_hash from nullifier
+
+        // Path to the Prover.toml file
+        string memory filePath = "circuits/deposit/Prover.toml";
+
+        // Read the entire file content
+        string memory fileContent = vm.readFile(filePath);
+
+        // Define the key we're looking for
+        string memory key = "nullifier = \"";
+        bytes memory keyBytes = bytes(key);
+
+        // Convert file content to bytes for processing
+        bytes memory contentBytes = bytes(fileContent);
+
+        // Find the starting index of the key
+        uint256 startIndex = findSubstring(contentBytes, keyBytes, 0);
+        require(startIndex != type(uint256).max, "nullifier key not found");
+
+        // Calculate the starting position of the value
+        uint256 valueStart = startIndex + keyBytes.length;
+        require(valueStart < contentBytes.length, "Invalid file format");
+
+        // Find the closing quote of the value
+        uint256 valueEnd = valueStart;
+        while (valueEnd < contentBytes.length && contentBytes[valueEnd] != '"') {
+            valueEnd++;
+        }
+        require(valueEnd < contentBytes.length, "Closing quote not found");
+
+        // Extract the nullifier value
+        bytes memory nullifierBytes = new bytes(valueEnd - valueStart);
+        for (uint256 i = 0; i < valueEnd - valueStart; i++) {
+            nullifierBytes[i] = contentBytes[valueStart + i];
+        }
+        string memory nullifier = string(nullifierBytes);
+
+        // Output the nullifier value
+        console.log("Nullifier:", nullifier);
+    }
+
+    /**
+     * @dev Finds the index of the first occurrence of `needle` in `haystack` starting from `start`.
+     * Returns `type(uint256).max` if not found.
+     */
+    function findSubstring(bytes memory haystack, bytes memory needle, uint256 start) internal pure returns (uint256) {
+        if (needle.length == 0) return 0;
+        for (uint256 i = start; i <= haystack.length - needle.length; i++) {
+            bool found = true;
+            for (uint256 j = 0; j < needle.length; j++) {
+                if (haystack[i + j] != needle[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) return i;
+        }
+        return type(uint256).max;
+    }
 
     function test_deposit_proof_vault_generate_data() public {
         // public inputs
@@ -129,15 +188,15 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         }
     }
 
-    function test_withdraw_proof() public {
+    function test_withdraw_proof() public view {
         // private inputs
         string memory nullifierStr = vm.readLine("./data/nullifier.txt");
 
         // bytes32 secret = stringToBytes32(secretStr);
         bytes32 nullifier = stringToBytes32(nullifierStr);
-        string memory nullifier_hash = bytes32ToString(bytes32(PoseidonT2.hash([uint(nullifier)])));
+        string memory nullifier_hash = bytes32ToString(bytes32(PoseidonT2.hash([uint256(nullifier)])));
         // console.log(bytes32ToString(bytes32(PoseidonT2.hash([uint(nullifier)]))));
-        
+
         string memory proof = vm.readLine("./data/withdraw_proof.txt");
         bytes memory proofBytes = vm.parseBytes(proof);
 
@@ -151,7 +210,7 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         console.log(liquidity);
         console.log(root);
         console.log(nullifier_hash);
-        
+
         bytes32[] memory publicInputs = new bytes32[](5);
         publicInputs[0] = stringToBytes32(current_timestamp);
         publicInputs[1] = stringToBytes32(asset);

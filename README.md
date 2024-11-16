@@ -66,11 +66,14 @@ cd ..
 Foundry script/test:
 ```
 forge test --match-test test_deposit_proof_vault_generate_data
+
+cd tornado-cli
 cargo run --package tornado-cli --bin withdraw_prover_formatter
+cd ..
+
 ```
 
 Full Withdraw command:
-
 ```
 cd circuits/withdraw
 nargo execute
