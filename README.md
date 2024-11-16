@@ -1,4 +1,5 @@
-# ZK-IMT
+# TORNADO-CASH 2.0: Native EVM Privacy-Preserving Lending Platform
+ 
 
 Setting up:
 
