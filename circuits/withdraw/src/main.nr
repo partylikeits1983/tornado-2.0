@@ -13,7 +13,8 @@ fn main(
     proof_path_indices: [Field; 32],
 ) {
     // check current_timestamp - 86400 > deposit_timestamp
-    let one_day_ago = current_timestamp - 86400;
+    // let one_day_ago = current_timestamp - 86400;
+    let one_day_ago = current_timestamp - 10; // 10 seconds (for testing)
     let can_withdraw = deposit_timestamp.lt(one_day_ago);
     assert(can_withdraw);
 
