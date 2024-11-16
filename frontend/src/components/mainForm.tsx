@@ -28,7 +28,7 @@ interface MainFormProps {
 }
 
 // Represent deposit values as strings
-const depositValues = ['0.005', '0.01', '1', '10', '100'];
+const depositValues = ['0.1', '0.5', '1', '10', '100'];
 
 const MainForm: React.FC<MainFormProps> = ({ walletProvider }) => {
   const [actionType, setActionType] = useState<'deposit' | 'withdraw'>('deposit');

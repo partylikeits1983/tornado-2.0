@@ -74,7 +74,7 @@ anvil --accounts 10 --timestamp $(date +%s) --block-time 5
 ```
 2) in new terminal deploy the vault & verifier contracts:
 ```
-forge script script/Deploy.s.sol --fork-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
+forge script script/Deploy.s.sol --fork-url http://127.0.0.1:8545 --private-key 2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6 --broadcast
 ```
 
 
@@ -93,7 +93,9 @@ cargo run --package tornado-cli --bin deposit_proof_convert
 cd ..
 
 forge test --match-test test_write_nullifier
+```
 
+```
 sleep 11
 
 forge test --match-test test_deposit_proof_vault_generate_data
@@ -117,5 +119,7 @@ cd tornado-cli
 cargo run --package tornado-cli --bin withdraw_proof_convert
 cd ..
 
-forge test --match-test test_withdraw_proof 
+forge test --match-test test_withdraw_proof
 ```
+
+forge test --match-test test_withdraw_proof 

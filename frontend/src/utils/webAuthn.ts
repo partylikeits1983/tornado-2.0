@@ -13,7 +13,7 @@ import {
 import { toBeHex } from 'ethers';
 
 const VAULT_ABI = require('../abi/Vault.json').abi;
-const vaultAddress = '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9';
+const vaultAddress = '0xe1Aa25618fA0c7A1CFDab5d6B456af611873b629';
 
 interface AlertFunction {
     (message: string): void;
