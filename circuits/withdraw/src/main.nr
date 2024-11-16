@@ -1,7 +1,7 @@
 use dep::std::hash::poseidon;
 
 fn main(
-    recipient_address: pub Field, // unused in the circuit, only used in withdraw func
+    _recipient_address: pub Field, // unused in the circuit, only used in withdraw func
     current_timestamp: pub Field,
     deposit_timestamp: Field,
     asset: pub Field,
@@ -43,7 +43,7 @@ fn main(
 #[test]
 fn test_main() {
     // Step 1: Set up inputs
-    let recipient_address = 123;
+    let recipient_address = 0;
     let current_timestamp = 1731728931; // Sat Nov 16 2024 03:48:51 GMT+0000
     let deposit_timestamp = 1731613683; // Thu Nov 14 2024 19:48:03 GMT+0000
     let asset = 0;
@@ -82,6 +82,7 @@ fn test_main() {
     }
     let root = hash;
 
+    println(recipient_address);
     println(root);
     println(nullifier_hash);
     println(nullifier);

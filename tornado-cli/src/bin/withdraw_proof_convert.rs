@@ -4,7 +4,7 @@ use std::path::Path;
 
 fn main() -> io::Result<()> {
     // Number of public inputs (including return values)
-    let num_public_inputs = 5; // Change this value as needed
+    let num_public_inputs = 6; // Change this value as needed
     let public_input_bytes = 32 * num_public_inputs;
 
     // Read the proof file

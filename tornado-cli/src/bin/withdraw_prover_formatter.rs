@@ -45,6 +45,7 @@ fn main() -> io::Result<()> {
 
     // Common fields for Prover.toml files
     let common_fields = |file: &mut File| -> io::Result<()> {
+        writeln!(file, "_recipient_address = \"{}\"", recipient)?;
         writeln!(file, "current_timestamp = \"{}\"", current_timestamp)?;
         writeln!(file, "deposit_timestamp = \"{}\"", deposit_timestamp)?;
         writeln!(file, "asset = \"{}\"", deposit_asset)?;
@@ -53,7 +54,6 @@ fn main() -> io::Result<()> {
         writeln!(file, "secret = \"{}\"", secret_value)?;
         writeln!(file, "nullifier = \"{}\"", nullifier_value)?;
         writeln!(file, "nullifier_hash = \"{}\"", nullifier_hash)?;
-        writeln!(file, "recipient = \"{}\"", recipient)?;
         writeln!(file, "proof_path_indices = [")?;
         for line in io::BufReader::new(File::open(&indices_path)?).lines() {
             let line = line?;

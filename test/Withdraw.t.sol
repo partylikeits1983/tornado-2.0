@@ -26,7 +26,7 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         hasher = new CryptoTools();
         depositVerifier = new DepositVerifier();
         withdrawVerifier = new WithdrawVerifier();
-        vault = new Vault(address(depositVerifier));
+        vault = new Vault(address(depositVerifier), address(withdrawVerifier));
     }
 
     function test_hash() public view {
@@ -182,24 +182,27 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         string memory proof = vm.readLine("./data/withdraw_proof.txt");
         bytes memory proofBytes = vm.parseBytes(proof);
 
+        string memory recipient = vm.readLine("./data/withdraw_recipient.txt"); 
         string memory current_timestamp = vm.readLine("./data/withdraw_current_timestamp.txt");
         string memory asset = vm.readLine("./data/withdraw_asset.txt");
         string memory liquidity = vm.readLine("./data/withdraw_liquidity.txt");
         string memory root = vm.readLine("./data/withdraw_root.txt");
         string memory nullifier_hash = vm.readLine("./data/withdraw_nullifier_hash.txt");
 
+        console.log("recipient", recipient);
         console.log(current_timestamp);
         console.log(asset);
         console.log(liquidity);
         console.log(root);
         console.log(nullifier_hash);
 
-        bytes32[] memory publicInputs = new bytes32[](5);
-        publicInputs[0] = stringToBytes32(current_timestamp);
-        publicInputs[1] = stringToBytes32(asset);
-        publicInputs[2] = stringToBytes32(liquidity);
-        publicInputs[3] = stringToBytes32(root);
-        publicInputs[4] = stringToBytes32(nullifier_hash);
+        bytes32[] memory publicInputs = new bytes32[](6);
+        publicInputs[0] = stringToBytes32(recipient);
+        publicInputs[1] = stringToBytes32(current_timestamp);
+        publicInputs[2] = stringToBytes32(asset);
+        publicInputs[3] = stringToBytes32(liquidity);
+        publicInputs[4] = stringToBytes32(root);
+        publicInputs[5] = stringToBytes32(nullifier_hash);
 
         console.log("checking zk proof");
         withdrawVerifier.verify(proofBytes, publicInputs);

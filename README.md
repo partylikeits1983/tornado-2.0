@@ -69,6 +69,8 @@ cd ..
 forge test --match-test test_write_nullifier
 ```
 
+@DEV WAIT 10 seconds!!!!
+
 ### 3) Get IMT root, proof siblings, and path indicies, then format /withdraw/Prover.toml
 ```
 forge test --match-test test_deposit_proof_vault_generate_data

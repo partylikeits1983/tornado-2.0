@@ -9,6 +9,7 @@ import {PoseidonT2} from "../src/libraries/PoseidonT2.sol";
 import {PoseidonT3} from "../src/libraries/PoseidonT3.sol";
 
 import {UltraVerifier as DepositVerifier} from "../../circuits/deposit/target/contract.sol";
+import {UltraVerifier as WithdrawVerifier} from "../../circuits/withdraw/target/contract.sol";
 
 import {ConvertBytes32ToString} from "../src/libraries/Bytes32ToString.sol";
 
@@ -16,14 +17,16 @@ import {Vault} from "../src/Vault.sol";
 
 contract CryptographyTest is Test, ConvertBytes32ToString {
     CryptoTools public hasher;
-    DepositVerifier public depositVerifier;
 
-    Vault vault;
+    DepositVerifier public depositVerifier;
+    WithdrawVerifier public withdrawVerifier;
+    Vault public vault;
 
     function setUp() public {
         hasher = new CryptoTools();
         depositVerifier = new DepositVerifier();
-        vault = new Vault(address(depositVerifier));
+        withdrawVerifier = new WithdrawVerifier();
+        vault = new Vault(address(depositVerifier), address(withdrawVerifier));
     }
 
     function test_deposit_proof() public view {
