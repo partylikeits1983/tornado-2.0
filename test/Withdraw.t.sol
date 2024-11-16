@@ -129,25 +129,35 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         }
     }
 
-
     function test_withdraw_proof() public {
         // private inputs
-        uint256 nullifier = 0;
-        uint256 secret = 0;
+        string memory nullifierStr = vm.readLine("./data/nullifier.txt");
 
-        string memory proof = vm.readLine("./data/proof.txt");
+        // bytes32 secret = stringToBytes32(secretStr);
+        bytes32 nullifier = stringToBytes32(nullifierStr);
+        string memory nullifier_hash = bytes32ToString(bytes32(PoseidonT2.hash([uint(nullifier)])));
+        // console.log(bytes32ToString(bytes32(PoseidonT2.hash([uint(nullifier)]))));
+        
+        string memory proof = vm.readLine("./data/withdraw_proof.txt");
         bytes memory proofBytes = vm.parseBytes(proof);
 
         string memory current_timestamp = vm.readLine("./data/withdraw_current_timestamp.txt");
-        string memory input_1 = vm.readLine("./data/d.txt");
-        string memory input_2 = vm.readLine("./data/input_1.txt");
-        string memory input_3 = vm.readLine("./data/input_1.txt");
-        string memory input_4 = vm.readLine("./data/input_1.txt");
+        string memory asset = vm.readLine("./data/withdraw_asset.txt");
+        string memory liquidity = vm.readLine("./data/withdraw_liquidity.txt");
+        string memory root = vm.readLine("./data/withdraw_root.txt");
+
+        console.log(current_timestamp);
+        console.log(asset);
+        console.log(liquidity);
+        console.log(root);
+        console.log(nullifier_hash);
         
-        
-        bytes32[] memory publicInputs = new bytes32[](2);
-        publicInputs[0] = stringToBytes32(input_0);
-        publicInputs[1] = stringToBytes32(input_1);
+        bytes32[] memory publicInputs = new bytes32[](5);
+        publicInputs[0] = stringToBytes32(current_timestamp);
+        publicInputs[1] = stringToBytes32(asset);
+        publicInputs[2] = stringToBytes32(liquidity);
+        publicInputs[3] = stringToBytes32(root);
+        publicInputs[4] = stringToBytes32(nullifier_hash);
 
         console.log("checking zk proof");
         withdrawVerifier.verify(proofBytes, publicInputs);

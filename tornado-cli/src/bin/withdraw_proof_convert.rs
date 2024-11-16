@@ -55,7 +55,7 @@ fn main() -> io::Result<()> {
     let proof_hex = format!("0x{}", hex::encode(proof_bytes));
 
     // Save the proof to proof.txt
-    let proof_file_path = data_dir.join("proof.txt");
+    let proof_file_path = data_dir.join("withdraw_proof.txt");
     let mut proof_file = File::create(proof_file_path)?;
     writeln!(proof_file, "{}", proof_hex)?;
 
