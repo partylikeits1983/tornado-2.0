@@ -13,16 +13,12 @@ fn main() -> io::Result<()> {
     let liquidity_path = Path::new("../data/deposit_liquidity.txt");
     let timestamp_path = Path::new("../data/deposit_timestamp.txt");
 
-    let nulifier_path = Path::new("../data/nullifier.txt");
-    let secret_path = Path::new("../data/secret.txt");
-
-    // Paths for output Prover.toml files
+    // Paths for Prover.toml files
     let withdraw_output_path = Path::new("../circuits/withdraw/Prover.toml");
-    let deposit_output_path = Path::new("../circuits/deposit/Prover.toml");
+    let deposit_input_path = Path::new("../circuits/deposit/Prover.toml"); // Changed to input
 
-    // Open the output files for writing
+    // Open the withdraw Prover.toml file for writing
     let mut withdraw_file = File::create(&withdraw_output_path)?;
-    // let mut deposit_file = File::create(&deposit_output_path)?;
 
     // Read data from files
     let current_timestamp = get_current_timestamp()?;
@@ -31,11 +27,13 @@ fn main() -> io::Result<()> {
     let deposit_liquidity = read_first_line(&liquidity_path)?;
 
     let root_value = read_first_line(&root_path)?;
-    let secret_value = read_first_line(&secret_path)?;
-    let nulifier_value = read_first_line(&nulifier_path)?;
+
+    // Read secret and nullifier from deposit Prover.toml
+    let (secret_value, nullifier_value) = read_prover_toml(&deposit_input_path)?;
+
     let nullifier_hash = "0x2a09a9fd93c590c26b91effbb2499f07e8f7aa12e2b4940a3aed2411cb65e11c";
 
-    // Common fields for both Prover.toml files
+    // Common fields for Prover.toml files
     let common_fields = |file: &mut File| -> io::Result<()> {
         writeln!(file, "current_timestamp = \"{}\"", current_timestamp)?;
         writeln!(file, "deposit_timestamp = \"{}\"", deposit_timestamp)?;
@@ -43,7 +41,7 @@ fn main() -> io::Result<()> {
         writeln!(file, "liquidity = \"{}\"", deposit_liquidity)?;
         writeln!(file, "root = \"{}\"", root_value)?;
         writeln!(file, "secret = \"{}\"", secret_value)?;
-        writeln!(file, "nullifier = \"{}\"", nulifier_value)?;
+        writeln!(file, "nullifier = \"{}\"", nullifier_value)?;
         writeln!(file, "nullifier_hash = \"{}\"", nullifier_hash)?;
         writeln!(file, "proof_path_indices = [")?;
         for line in io::BufReader::new(File::open(&indices_path)?).lines() {
@@ -82,4 +80,54 @@ fn get_current_timestamp() -> io::Result<String> {
     let since_the_epoch = start.duration_since(UNIX_EPOCH)
         .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
     Ok(since_the_epoch.as_secs().to_string())
+}
+
+// Function to read secret and nullifier from Prover.toml
+fn read_prover_toml(path: &Path) -> io::Result<(String, String)> {
+    let file = File::open(path)?;
+    let reader = io::BufReader::new(file);
+    let mut secret = None;
+    let mut nullifier = None;
+
+    for line in reader.lines() {
+        let line = line?;
+        // Ignore comments and empty lines
+        if line.trim().starts_with('#') || line.trim().is_empty() {
+            continue;
+        }
+
+        if let Some(value) = parse_toml_line(&line, "secret") {
+            secret = Some(value);
+        }
+
+        if let Some(value) = parse_toml_line(&line, "nullifier") {
+            nullifier = Some(value);
+        }
+
+        // Break early if both values are found
+        if secret.is_some() && nullifier.is_some() {
+            break;
+        }
+    }
+
+    match (secret, nullifier) {
+        (Some(s), Some(n)) => Ok((s, n)),
+        _ => Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "Missing secret or nullifier in Prover.toml",
+        )),
+    }
+}
+
+// Helper function to parse a specific key from a TOML line
+fn parse_toml_line(line: &str, key: &str) -> Option<String> {
+    if line.starts_with(key) {
+        let parts: Vec<&str> = line.splitn(2, '=').collect();
+        if parts.len() == 2 {
+            // Remove possible whitespace and surrounding quotes
+            let value = parts[1].trim().trim_matches('"').to_string();
+            return Some(value);
+        }
+    }
+    None
 }
