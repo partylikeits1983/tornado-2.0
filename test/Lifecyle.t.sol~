@@ -58,10 +58,6 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
     }
 
     function test_deposit_proof() public {
-        // private inputs
-        string memory secret = vm.readLine("./data/deposit_secret.txt");
-        string memory nullifier = vm.readLine("./data/deposit_nullifier.txt");
-
         // public inputs
         string memory asset = vm.readLine("./data/deposit_asset.txt");
         string memory liquidity = vm.readLine("./data/deposit_liquidity.txt");

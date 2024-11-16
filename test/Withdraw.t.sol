@@ -8,18 +8,28 @@ import {BinaryIMTData} from "../src/libraries/InternalBinaryIMT.sol";
 import {PoseidonT2} from "../src/libraries/PoseidonT2.sol";
 import {PoseidonT3} from "../src/libraries/PoseidonT3.sol";
 
-import {UltraVerifier as IMTVerifier} from "../../circuits/imt/target/contract.sol";
+import {UltraVerifier as DepositVerifier} from "../../circuits/deposit/target/contract.sol";
+import {UltraVerifier as WithdrawVerifier} from "../../circuits/withdraw/target/contract.sol";
+
+
 
 import {ConvertBytes32ToString} from "../src/libraries/Bytes32ToString.sol";
+
+import {Vault} from "../src/Vault.sol";
 
 contract CryptographyTest is Test, ConvertBytes32ToString {
     CryptoTools public hasher;
 
-    IMTVerifier public verifier;
+    DepositVerifier public depositVerifier;
+    WithdrawVerifier public withdrawVerifier;
+    Vault public vault;
+
 
     function setUp() public {
         hasher = new CryptoTools();
-        verifier = new IMTVerifier();
+        depositVerifier = new DepositVerifier();
+        withdrawVerifier = new WithdrawVerifier();
+        vault = new Vault(address(depositVerifier));
     }
 
     function test_hash() public view {
@@ -74,50 +84,54 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         console.log("Leaf %d verified successfully.", leafValue);
     }
 
-    function test_IMT_writeOutput() public {
-        vm.writeFile("data/root.txt", "");
-        vm.writeFile("data/commitment_hash.txt", "");
-        vm.writeFile("data/nulifier_hash.txt", "");
-        vm.writeFile("data/proof_siblings.txt", "");
-        vm.writeFile("data/proof_path_indices.txt", "");
-        vm.writeFile("data/nullifier.txt", "");
-        vm.writeFile("data/secret.txt", "");
 
-        // private inputs
-        uint256 nullifier = 0;
-        uint256 secret = 0;
+    function test_deposit_proof_vault_generate_data() public {
+        // public inputs
+        string memory asset = vm.readLine("./data/deposit_asset.txt");
+        string memory liquidityStr = vm.readLine("./data/deposit_liquidity.txt");
+        string memory timestamp = vm.readLine("./data/deposit_timestamp.txt");
+        string memory leaf = vm.readLine("./data/deposit_leaf.txt");
 
-        // calculated inside circuit
-        uint256 commitmentHash = PoseidonT3.hash([nullifier, secret]);
-        uint256 nullifierHash = PoseidonT2.hash([nullifier]);
+        // proof
+        string memory proof = vm.readLine("./data/deposit_proof.txt");
+        bytes memory proofBytes = vm.parseBytes(proof);
 
-        hasher.insert(commitmentHash);
+        // public inputs
+        bytes32[] memory publicInputs = new bytes32[](4);
+        publicInputs[0] = stringToBytes32(asset);
+        publicInputs[1] = stringToBytes32(liquidityStr);
+        publicInputs[2] = stringToBytes32(timestamp);
+        publicInputs[3] = stringToBytes32(leaf);
 
-        (, uint256 root,,) = hasher.binaryIMTData();
+        uint256 liquidity = uint256(stringToBytes32(liquidityStr));
 
-        (uint256[] memory proofSiblings, uint8[] memory proofPathIndices) = hasher.createProof(0);
+        uint256 currentTimestamp = 1731646446; // Fri Nov 15 2024 04:54:06 GMT+0000
+        vm.warp(currentTimestamp);
+
+        uint256 leafIndex = vault.deposit{value: liquidity}(proofBytes, publicInputs);
+
+        (, uint256 root,,) = vault.binaryIMTData();
+
+        // Generate Data for Withdraw Proof
+        (uint256[] memory proofSiblings, uint8[] memory proofPathIndices) = vault.createProof(leafIndex);
 
         vm.writeFile("data/root.txt", bytes32ToString(bytes32(root)));
-        vm.writeFile("data/commitment_hash.txt", bytes32ToString(bytes32(commitmentHash)));
-        vm.writeFile("data/nullifier_hash.txt", bytes32ToString(bytes32(nullifierHash)));
-        vm.writeFile("data/nullifier.txt", bytes32ToString(bytes32(nullifier)));
-        vm.writeFile("data/secret.txt", bytes32ToString(bytes32(secret)));
+        // vm.writeFile("data/leaf.txt", bytes32ToString(stringToBytes32(leaf)));
 
         for (uint256 i = 0; i < proofSiblings.length; i++) {
             string memory path = "data/proof_siblings.txt";
             vm.writeLine(path, bytes32ToString(bytes32(proofSiblings[i])));
         }
 
-        console.log("Proof path indices:");
         for (uint256 i = 0; i < proofPathIndices.length; i++) {
             string memory path = "data/proof_path_indices.txt";
             vm.writeLine(path, bytes32ToString(bytes32(uint256(proofPathIndices[i]))));
         }
-
-        require(hasher.verify(commitmentHash, proofSiblings, proofPathIndices), "failed");
     }
 
-    function test_IMT_proof() public {
+
+
+    /*     function test_IMT_proof() public {
         // private inputs
         uint256 nullifier = 0;
         uint256 secret = 0;
@@ -138,5 +152,5 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         console.log("checking zk proof");
         verifier.verify(proofBytes, publicInputs);
         console.log("verified");
-    }
+    } */
 }

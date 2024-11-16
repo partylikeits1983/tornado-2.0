@@ -26,46 +26,7 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
         vault = new Vault(address(depositVerifier));
     }
 
-    function test_deposit_write_output() public {
-        vm.writeFile("data/deposit_secret.txt", "");
-        vm.writeFile("data/deposit_nullifier.txt", "");
-        vm.writeFile("data/deposit_nullifier_hash.txt", "");
-        vm.writeFile("data/deposit_asset.txt", "");
-        vm.writeFile("data/deposit_liquidity.txt", "");
-        vm.writeFile("data/deposit_timestamp.txt", "");
-        vm.writeFile("data/deposit_leaf.txt", "");
-
-        // private inputs
-        uint256 secret = 123;
-        uint256 nullifier = 123;
-
-        // public inputs
-        uint256 asset = uint256(uint160(address(1)));
-        uint256 liquidity = 1000;
-        uint256 timestamp = 3; // block.timestamp;
-
-        uint nullifier_hash = PoseidonT2.hash([nullifier]); 
-
-        // computed inside circuit as well
-        uint256 hash_0 = PoseidonT3.hash([secret, nullifier]);
-        uint256 hash_1 = PoseidonT3.hash([asset, liquidity]);
-        uint256 hash_2 = PoseidonT3.hash([hash_0, hash_1]);
-        uint256 leaf = PoseidonT3.hash([hash_2, timestamp]);
-
-        vm.writeFile("data/deposit_secret.txt", bytes32ToString(bytes32(secret)));
-        vm.writeFile("data/deposit_nullifier.txt", bytes32ToString(bytes32(nullifier)));
-        vm.writeFile("data/deposit_nullifier_hash.txt", bytes32ToString(bytes32(nullifier_hash)));
-        vm.writeFile("data/deposit_asset.txt", bytes32ToString(bytes32(asset)));
-        vm.writeFile("data/deposit_liquidity.txt", bytes32ToString(bytes32(liquidity)));
-        vm.writeFile("data/deposit_timestamp.txt", bytes32ToString(bytes32(timestamp)));
-        vm.writeFile("data/deposit_leaf.txt", bytes32ToString(bytes32(leaf)));
-    }
-
-    function test_deposit_proof() public {
-        // private inputs
-        string memory secret = vm.readLine("./data/deposit_secret.txt");
-        string memory nullifier = vm.readLine("./data/deposit_nullifier.txt");
-
+    function test_deposit_proof() public view {
         // public inputs
         string memory asset = vm.readLine("./data/deposit_asset.txt");
         string memory liquidity = vm.readLine("./data/deposit_liquidity.txt");
@@ -93,15 +54,11 @@ contract CryptographyTest is Test, ConvertBytes32ToString {
     }
 
     function test_deposit_proof_vault() public {
-        // private inputs
-        string memory secret = vm.readLine("./data/deposit_secret.txt");
-        string memory nullifier = vm.readLine("./data/deposit_nullifier.txt");
-
         // public inputs
-        string memory asset = vm.readLine("./data/deposit_input_0.txt");
-        string memory liquidityStr = vm.readLine("./data/deposit_input_1.txt");
-        string memory timestamp = vm.readLine("./data/deposit_input_2.txt");
-        string memory leaf = vm.readLine("./data/deposit_input_3.txt");
+        string memory asset = vm.readLine("./data/deposit_asset.txt");
+        string memory liquidityStr = vm.readLine("./data/deposit_liquidity.txt");
+        string memory timestamp = vm.readLine("./data/deposit_timestamp.txt");
+        string memory leaf = vm.readLine("./data/deposit_leaf.txt");
 
         // proof
         string memory proof = vm.readLine("./data/deposit_proof.txt");

@@ -34,7 +34,17 @@ fn main() -> io::Result<()> {
 
     // Save each input to its respective file
     for (idx, input_hex) in public_inputs.iter().enumerate() {
-        let file_path = data_dir.join(format!("deposit_input_{}.txt", idx));
+        let filename = match idx {
+            0 => "deposit_asset.txt",
+            1 => "deposit_liquidity.txt",
+            2 => "deposit_timestamp.txt",
+            3 => "deposit_leaf.txt",
+            _ => {
+                eprintln!("Unexpected index {} for public inputs.", idx);
+                std::process::exit(1);
+            }
+        };
+        let file_path = data_dir.join(filename);
         let mut file = File::create(file_path)?;
         writeln!(file, "{}", input_hex)?;
     }
