@@ -15,3 +15,5 @@ docs/
 
 /tornado-cli/target/
 # *.gz
+
+.DS_Store
