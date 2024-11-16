@@ -1,66 +1,64 @@
-## Foundry
+# ZK-IMT
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-Foundry consists of:
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+Setting up:
 
-## Documentation
-
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+1) Install Noir
+```
+curl -L noirup.dev | bash
+noirup
 ```
 
-### Test
-
-```shell
-$ forge test
+2) Install Proving Backend:
+```
+curl -L bbup.dev | bash
+bbup
 ```
 
-### Format
-
-```shell
-$ forge fmt
+Generate Circuit Data:
+```
+forge test 
 ```
 
-### Gas Snapshots
-
-```shell
-$ forge snapshot
+format Prover.toml file
+```
+cd format_imt_prover
+cargo run
 ```
 
-### Anvil
+### Generate Solidity Verifier:
 
-```shell
-$ anvil
+Prove an execution of the Noir program
+```
+cd circuits/imt
+nargo execute
+bb prove -b ./target/deposit.json -w ./target/deposit.gz -o ./target/proof
 ```
 
-### Deploy
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+Verify the execution proof
+```
+bb write_vk -b ./target/deposit.json -o ./target/vk
 ```
 
-### Cast
-
-```shell
-$ cast <subcommand>
+Generate Solidity verifier:
+```
+bb contract
 ```
 
-### Help
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+
+Full deposit command:
+
+```
+cd circuits/deposit
+nargo execute
+bb prove -b ./target/deposit.json -w ./target/deposit.gz -o ./target/proof
+bb write_vk -b ./target/deposit.json -o ./target/vk
+cd ..
+cd ..
+cd proof_convert
+cargo run --package proof_convert --bin deposit_proof_convert
+cd ..
 ```

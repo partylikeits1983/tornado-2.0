@@ -1,0 +1,6 @@
+secret = "123"
+nullifier = "123"
+asset = "0"
+liquidity = "10000000000000000"
+timestamp = "1731732846"
+leaf = "0x0a9c9a5cc441528d1b590f2482247085a94ce821bef1b9959ffb15e5797cca24"
