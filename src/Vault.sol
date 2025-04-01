@@ -2,8 +2,8 @@
 pragma solidity ^0.8.24;
 
 import {CryptoTools} from "./CryptoTools.sol";
-import {UltraVerifier as DepositVerifier} from "../../circuits/deposit/target/contract.sol";
-import {UltraVerifier as WithdrawVerifier} from "../../circuits/withdraw/target/contract.sol";
+import {UltraVerifier as DepositVerifier} from "deposit_verifier/contract.sol";
+import {UltraVerifier as WithdrawVerifier} from "withdraw_verifier/contract.sol";
 
 import {Test, console} from "forge-std/Test.sol";
 

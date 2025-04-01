@@ -9,13 +9,13 @@ Tornado Cash 2.0 is a next-generation Ethereum privacy solution designed to addr
 
 1) Install Noir
 ```
-curl -L noirup.dev | bash
+curl -L https://raw.githubusercontent.com/noir-lang/noirup/refs/heads/main/install | bash
 noirup
 ```
 
 2) Install Proving Backend:
 ```
-curl -L bbup.dev | bash
+curl -L https://raw.githubusercontent.com/AztecProtocol/aztec-packages/refs/heads/master/barretenberg/bbup/install | bash
 bbup
 ```
 

@@ -8,7 +8,7 @@ fn main() -> io::Result<()> {
     let public_input_bytes = 32 * num_public_inputs;
 
     // Read the proof file
-    let mut file = File::open("../circuits/deposit/target/proof")?;
+    let mut file = File::open("../circuits/deposit/target/proof/proof")?;
     let mut proof_data = Vec::new();
     file.read_to_end(&mut proof_data)?;
 

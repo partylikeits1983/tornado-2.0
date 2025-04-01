@@ -8,8 +8,8 @@ import {BinaryIMTData} from "../src/libraries/InternalBinaryIMT.sol";
 import {PoseidonT2} from "../src/libraries/PoseidonT2.sol";
 import {PoseidonT3} from "../src/libraries/PoseidonT3.sol";
 
-import {UltraVerifier as DepositVerifier} from "../../circuits/deposit/target/contract.sol";
-import {UltraVerifier as WithdrawVerifier} from "../../circuits/withdraw/target/contract.sol";
+import {UltraVerifier as DepositVerifier} from "deposit_verifier/contract.sol";
+import {UltraVerifier as WithdrawVerifier} from "withdraw_verifier/contract.sol";
 
 import {ConvertBytes32ToString} from "../src/libraries/Bytes32ToString.sol";
 
